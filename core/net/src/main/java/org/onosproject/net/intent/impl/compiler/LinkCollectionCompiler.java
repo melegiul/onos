@@ -681,7 +681,11 @@ public abstract class LinkCollectionCompiler<T> {
         /*
          * Finally we set the output action.
          */
-        outPorts.forEach(treatmentBuilder::setOutput);
+        if (!intent.isFilterIntent()) {
+            outPorts.forEach(treatmentBuilder::setOutput);
+        } else {
+
+        }
     }
 
     /**

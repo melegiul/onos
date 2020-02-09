@@ -52,6 +52,8 @@ public final class LinkCollectionIntent extends ConnectivityIntent {
     private final double cost;
     private static final int DEFAULT_COST = 1;
 
+    private final boolean isFilterIntent;
+
     /**
      * Creates a new actionable intent capable of funneling the selected
      * traffic along the specified convergent tree and out the given egress
@@ -83,13 +85,15 @@ public final class LinkCollectionIntent extends ConnectivityIntent {
                                  int priority,
                                  boolean egressTreatment,
                                  double cost,
-                                 ResourceGroup resourceGroup) {
+                                 ResourceGroup resourceGroup,
+                                 boolean isFilterIntent) {
         super(appId, key, resources(resources, links), selector, treatment, constraints, priority, resourceGroup);
         this.links = links;
         this.ingressPoints = ingressPoints;
         this.egressPoints = egressPoints;
         this.egressTreatmentFlag = egressTreatment;
         this.cost = cost;
+        this.isFilterIntent = isFilterIntent;
     }
 
     /**
@@ -101,6 +105,7 @@ public final class LinkCollectionIntent extends ConnectivityIntent {
         this.egressPoints = null;
         this.egressTreatmentFlag = false;
         this.cost = DEFAULT_COST;
+        isFilterIntent = false;
     }
 
     /**
@@ -125,6 +130,8 @@ public final class LinkCollectionIntent extends ConnectivityIntent {
         private Set<FilteredConnectPoint> egressPoints;
         private boolean egressTreatmentFlag;
         private double cost;
+
+        private boolean isFilterIntent = false;
 
 
         private Builder() {
@@ -230,6 +237,17 @@ public final class LinkCollectionIntent extends ConnectivityIntent {
             return this;
         }
 
+        /*
+        * marks filter intents
+        * @param filter mark
+        * @return this builder
+        */
+
+        public Builder isFilterIntent(boolean isFilterIntent) {
+            this.isFilterIntent = isFilterIntent;
+            return this;
+        }
+
         /**
          * Builds a single point to multi point intent from the
          * accumulated parameters.
@@ -251,7 +269,8 @@ public final class LinkCollectionIntent extends ConnectivityIntent {
                     priority,
                     egressTreatmentFlag,
                     cost,
-                    resourceGroup
+                    resourceGroup,
+                    isFilterIntent
             );
         }
     }
@@ -329,6 +348,13 @@ public final class LinkCollectionIntent extends ConnectivityIntent {
     public double cost() {
         return cost;
     }
+
+    /*
+    * return the filter intent mark
+    *
+    * @return the filter intent mark
+    */
+    public boolean isFilterIntent() {return isFilterIntent;}
 
     @Override
     public String toString() {
