@@ -605,8 +605,10 @@ public abstract class LinkCollectionCompiler<T> {
         /*
          * Sanity check
          */
-        if (intent.filteredEgressPoints().size() != 1) {
-            throw new IntentCompilationException(WRONG_EGRESS);
+        if (!intent.isFilterIntent()) {
+            if (intent.filteredEgressPoints().size() != 1) {
+                throw new IntentCompilationException(WRONG_EGRESS);
+            }
         }
         /*
          * We try to understand if the device is one of the ingress points.
@@ -616,8 +618,12 @@ public abstract class LinkCollectionCompiler<T> {
         /*
          * We retrieve from the Intent the unique egress points.
          */
-        Optional<FilteredConnectPoint> filteredEgressPoint =
-                intent.filteredEgressPoints().stream().findFirst();
+        Optional<FilteredConnectPoint> filteredEgressPoint;
+        if (!intent.isFilterIntent()) {
+            filteredEgressPoint = intent.filteredEgressPoints().stream().findFirst();
+        } else {
+            filteredEgressPoint = intent.filteredIngressPoints().stream().findFirst();
+        }
         /*
          * We check if the device is the ingress device
          */
@@ -952,8 +958,14 @@ public abstract class LinkCollectionCompiler<T> {
             inputPorts.put(ingressPoint.deviceId(), ingressPoint.port());
         }
 
-        for (ConnectPoint egressPoint : intent.egressPoints()) {
-            outputPorts.put(egressPoint.deviceId(), egressPoint.port());
+        if (intent.egressPoints() != null) {
+            for (ConnectPoint egressPoint : intent.egressPoints()) {
+                outputPorts.put(egressPoint.deviceId(), egressPoint.port());
+            }
+        } else {
+            for (ConnectPoint ingressPoint : intent.ingressPoints()) {
+                outputPorts.put(ingressPoint.deviceId(), ingressPoint.port());
+            }
         }
 
     }
@@ -1114,8 +1126,12 @@ public abstract class LinkCollectionCompiler<T> {
     private Optional<FilteredConnectPoint> getFilteredConnectPointFromIntent(DeviceId deviceId,
                                                                              PortNumber portNumber,
                                                                              LinkCollectionIntent intent) {
-        Set<FilteredConnectPoint> filteredConnectPoints =
-                Sets.union(intent.filteredIngressPoints(), intent.filteredEgressPoints());
+        Set<FilteredConnectPoint> filteredConnectPoints;
+        if (!intent.isFilterIntent()) {
+            filteredConnectPoints = Sets.union(intent.filteredIngressPoints(), intent.filteredEgressPoints());
+        } else {
+            filteredConnectPoints = intent.filteredIngressPoints();
+        }
         return filteredConnectPoints.stream()
                 .filter(port -> port.connectPoint().deviceId().equals(deviceId))
                 .filter(port -> port.connectPoint().port().equals(portNumber))

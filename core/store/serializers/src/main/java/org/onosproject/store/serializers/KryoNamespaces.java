@@ -169,26 +169,7 @@ import org.onosproject.net.flowobjective.Objective;
 import org.onosproject.net.flowobjective.ObjectiveError;
 import org.onosproject.net.host.DefaultHostDescription;
 import org.onosproject.net.host.HostDescription;
-import org.onosproject.net.intent.ConnectivityIntent;
-import org.onosproject.net.intent.FlowObjectiveIntent;
-import org.onosproject.net.intent.FlowRuleIntent;
-import org.onosproject.net.intent.HostToHostIntent;
-import org.onosproject.net.intent.Intent;
-import org.onosproject.net.intent.IntentId;
-import org.onosproject.net.intent.IntentOperation;
-import org.onosproject.net.intent.IntentState;
-import org.onosproject.net.intent.Key;
-import org.onosproject.net.intent.LinkCollectionIntent;
-import org.onosproject.net.intent.MultiPointToSinglePointIntent;
-import org.onosproject.net.intent.OpticalCircuitIntent;
-import org.onosproject.net.intent.OpticalConnectivityIntent;
-import org.onosproject.net.intent.OpticalOduIntent;
-import org.onosproject.net.intent.OpticalPathIntent;
-import org.onosproject.net.intent.PathIntent;
-import org.onosproject.net.intent.PointToPointIntent;
-import org.onosproject.net.intent.ProtectedTransportIntent;
-import org.onosproject.net.intent.ProtectionEndpointIntent;
-import org.onosproject.net.intent.SinglePointToMultiPointIntent;
+import org.onosproject.net.intent.*;
 import org.onosproject.net.intent.constraint.AnnotationConstraint;
 import org.onosproject.net.intent.constraint.BandwidthConstraint;
 import org.onosproject.net.intent.constraint.BooleanConstraint;
@@ -576,6 +557,7 @@ public final class KryoNamespaces {
                     PointToPointIntent.class,
                     MultiPointToSinglePointIntent.class,
                     SinglePointToMultiPointIntent.class,
+                    FirewallIntent.class,
                     FlowRuleIntent.class,
                     LinkCollectionIntent.class,
                     OpticalConnectivityIntent.class,

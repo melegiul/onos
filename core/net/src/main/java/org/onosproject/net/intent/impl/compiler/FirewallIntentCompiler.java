@@ -45,23 +45,22 @@ public class FirewallIntentCompiler
     @Override
     public List<Intent> compile(FirewallIntent intent, List<Intent> installable) {
         Map<DeviceId, Link> links = new HashMap<>();
-        ConnectPoint egressPoint = intent.egressPoint();
 
-        final boolean allowMissingPaths = intentAllowsPartialFailure(intent);
+        /*final boolean allowMissingPaths = intentAllowsPartialFailure(intent);
         boolean hasPaths = false;
-        boolean missingSomePaths = false;
+        boolean missingSomePaths = false;*/
 
-        for (ConnectPoint ingressPoint : intent.ingressPoints()) {
-            if (ingressPoint.deviceId().equals(egressPoint.deviceId())) {
+        /*for (ConnectPoint ingressPoint : intent.ingressPoints()) {
+            *//*if (ingressPoint.deviceId().equals(egressPoint.deviceId())) {
                 if (deviceService.isAvailable(ingressPoint.deviceId())) {
                     hasPaths = true;
                 } else {
                     missingSomePaths = true;
                 }
                 continue;
-            }
+            }*//*
 
-            Path path = getPath(intent, ingressPoint.deviceId(), egressPoint.deviceId());
+//            Path path = getPath(intent, ingressPoint.deviceId(), egressPoint.deviceId());
 
             if (path != null) {
                 hasPaths = true;
@@ -80,16 +79,16 @@ public class FirewallIntentCompiler
             } else {
                 missingSomePaths = true;
             }
-        }
+        }*/
 
         // Allocate bandwidth on existing paths if a bandwidth constraint is set
-        List<ConnectPoint> ingressCPs =
+        /*List<ConnectPoint> ingressCPs =
                 intent.filteredIngressPoints().stream()
                         .map(fcp -> fcp.connectPoint())
-                        .collect(Collectors.toList());
-        ConnectPoint egressCP = intent.filteredEgressPoint().connectPoint();
+                        .collect(Collectors.toList());*/
+//        ConnectPoint egressCP = intent.filteredEgressPoint().connectPoint();
 
-        List<ConnectPoint> pathCPs =
+        /*List<ConnectPoint> pathCPs =
                 links.values().stream()
                         .flatMap(l -> Stream.of(l.src(), l.dst()))
                         .collect(Collectors.toList());
@@ -103,18 +102,18 @@ public class FirewallIntentCompiler
             throw new IntentException("Cannot find any path between ingress and egress points.");
         } else if (!allowMissingPaths && missingSomePaths) {
             throw new IntentException("Missing some paths between ingress and egress points.");
-        }
+        }*/
 
         Intent result = LinkCollectionIntent.builder()
                 .appId(intent.appId())
                 .key(intent.key())
                 .treatment(intent.treatment())
                 .selector(intent.selector())
-                .links(Sets.newHashSet(links.values()))
+                .links(ImmutableSet.of())
                 .filteredIngressPoints(intent.filteredIngressPoints())
-                .filteredEgressPoints(ImmutableSet.of(intent.filteredEgressPoint()))
                 .priority(intent.priority())
                 .constraints(intent.constraints())
+                .cost(1)
                 .resourceGroup(intent.resourceGroup())
                 .isFilterIntent(true)
                 .build();

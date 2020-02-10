@@ -18,15 +18,15 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Installs Firewall between multiple ingress devices and a single egress device.
+ * Installs firewall at multiple Ingress Connection Points.
  */
 @Service
 @Command(scope = "onos", name = "add-firewall-intent",
-        description = "Installs firewall between multiple ingress devices and a single egress device")
+        description = "Installs firewall at multiple Ingress Connection Points")
 public class AddFirewallIntentCommand extends FilterIntentCommand {
 
-    @Argument(index = 0, name = "ingressDevices egressDevice",
-            description = "ingressDevice/Port..ingressDevice/Port egressDevice/Port",
+    @Argument(index = 0, name = "ingressDevices",
+            description = "ingressDevice/Port..ingressDevice/Port",
             required = true, multiValued = true)
     @Completion(ConnectPointCompleter.class)
     String[] deviceStrings = null;
@@ -35,15 +35,15 @@ public class AddFirewallIntentCommand extends FilterIntentCommand {
     protected void doExecute() {
         IntentService service = get(IntentService.class);
 
-        if (deviceStrings.length < 2) {
+        if (deviceStrings.length < 1) {
             return;
         }
 
-        String egressDeviceString = deviceStrings[deviceStrings.length - 1];
-        FilteredConnectPoint egress = new FilteredConnectPoint(ConnectPoint.deviceConnectPoint(egressDeviceString));
+        /*String egressDeviceString = deviceStrings[deviceStrings.length - 1];
+        FilteredConnectPoint egress = new FilteredConnectPoint(ConnectPoint.deviceConnectPoint(egressDeviceString));*/
 
         Set<FilteredConnectPoint> ingressPoints = new HashSet<>();
-        for (int index = 0; index < deviceStrings.length - 1; index++) {
+        for (int index = 0; index < deviceStrings.length; index++) {
             String ingressDeviceString = deviceStrings[index];
             ConnectPoint ingress = ConnectPoint.deviceConnectPoint(ingressDeviceString);
             ingressPoints.add(new FilteredConnectPoint(ingress));
@@ -59,7 +59,6 @@ public class AddFirewallIntentCommand extends FilterIntentCommand {
                 .selector(selector)
                 .treatment(treatment)
                 .filteredIngressPoints(ingressPoints)
-                .filteredEgressPoint(egress)
                 .constraints(constraints)
                 .priority(priority())
                 .resourceGroup(resourceGroup())
