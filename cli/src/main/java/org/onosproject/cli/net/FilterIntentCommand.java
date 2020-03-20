@@ -78,6 +78,14 @@ public abstract class FilterIntentCommand extends AbstractShellCommand {
             required = false, multiValued = false)
     private String fLabelString = null;
 
+    @Option(name = "--icmpType", description = "ICMP Type",
+            required = false, multiValued = false)
+    private String icmpTypeString = null;
+
+    @Option(name = "--icmpCode", description = "ICMP Code",
+            required = false, multiValued = false)
+    private String icmpCodeString = null;
+
     @Option(name = "--icmp6Type", description = "ICMPv6 Type",
             required = false, multiValued = false)
     @Completion(Icmp6TypeCompleter.class)
@@ -213,6 +221,16 @@ public abstract class FilterIntentCommand extends AbstractShellCommand {
 
         if (!isNullOrEmpty(fLabelString)) {
             selectorBuilder.matchIPv6FlowLabel(Integer.parseInt(fLabelString));
+        }
+
+        if (!isNullOrEmpty(icmpTypeString)) {
+            byte icmpType = IcmpType.parseFromString(icmpTypeString);
+            selectorBuilder.matchIcmpType(icmpType);
+        }
+
+        if (!isNullOrEmpty(icmpCodeString)) {
+            byte icmpCode = IcmpCode.parseFromString(icmpCodeString);
+            selectorBuilder.matchIcmpCode(icmpCode);
         }
 
         if (!isNullOrEmpty(icmp6TypeString)) {

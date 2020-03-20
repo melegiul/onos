@@ -29,11 +29,17 @@ public class ICMP extends BasePacket {
     protected byte icmpCode;
     protected short checksum;
 
-    public static final byte TYPE_ECHO_REQUEST = 0x08;
-    public static final byte TYPE_ECHO_REPLY = 0x00;
+    public static final byte TYPE_ECHO_REQUEST = (byte) 0x08;
+    public static final byte TYPE_ECHO_REPLY = (byte) 0x00;
+    public static final byte DEST_UNREACH = (byte) 0x03;
+    public static final byte TIME_EXCEED = (byte) 0x0b;
 
-    public static final byte CODE_ECHO_REPLY = 0x00;
-    public static final byte CODE_ECHO_REQEUST = 0x00;
+    // Code for ECHO_REPLY
+    public static final byte CODE_ECHO_REPLY = (byte) 0x00;
+    // Code for ECHO_REQUEST
+    public static final byte CODE_ECHO_REQEUST = (byte) 0x00;
+    // Code for TIME_EXCEED
+    public static final byte HOP_LIMIT_EXCEED = (byte) 0x00;
 
     public static final short ICMP_HEADER_LENGTH = 4;
 
